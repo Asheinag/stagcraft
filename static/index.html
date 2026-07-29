@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>sTagCraft</title>
+<link rel="stylesheet" href="/static/app.css">
+<script type="module" src="/static/app.js"></script>
+</head>
+<body>
+
+<div id="files"></div>
+
+<div id="main">
+  <div id="stage"><img id="pic" alt=""></div>
+  <div id="editor">
+    <div id="bar">
+      <span class="nm" id="curname">—</span>
+      <span id="pos"></span>
+      <span class="spacer"></span>
+      <span id="status">сохранено</span>
+    </div>
+    <textarea id="cap" spellcheck="false"
+      placeholder="dzhka, 1girl, solo, ..."></textarea>
+    <div id="chips"></div>
+  </div>
+</div>
+
+<div id="side">
+  <div class="sec">
+    <h3>переименовать тег везде</h3>
+    <input type="text" id="ren-old" placeholder="было (тег из датасета)" autocomplete="off">
+    <div class="row">
+      <input type="text" id="ren-new" placeholder="стало (пусто = удалить)">
+      <button id="ren-go" style="flex:0 0 70px" disabled>заменить</button>
+    </div>
+    <div class="note" id="ren-note"></div>
+  </div>
+  <div class="sec">
+    <h3>тег отмеченным (<span id="ncheck">0</span>)</h3>
+    <input type="text" id="bulk-tag" placeholder="тег">
+    <div class="row">
+      <button id="bulk-add">добавить</button>
+      <button id="bulk-del">убрать</button>
+    </div>
+  </div>
+  <div class="sec" style="border-bottom:none;padding-bottom:4px">
+    <h3>теги датасета</h3>
+    <input type="text" id="filter" placeholder="фильтр…">
+  </div>
+  <div id="taglist"></div>
+  <div class="hint">
+    <kbd>↑</kbd><kbd>↓</kbd> листать · <kbd>Ctrl</kbd>+<kbd>S</kbd> сохранить<br>
+    клик по тегу — показать только эти кадры<br>
+    <kbd>+</kbd> слева от счётчика — добавить тег в текущий кадр<br>
+    <span style="color:var(--sim)">пунктир</span> — есть похожий тег в датасете
+  </div>
+</div>
+</body>
+</html>

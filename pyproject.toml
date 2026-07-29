@@ -1,0 +1,41 @@
+[project]
+name = "stagcraft"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+# -------------------------------------------------------------------
+# Настройка pytest
+# -------------------------------------------------------------------
+[tool.pytest.ini_options]
+# Базовая папка приложения
+pythonpath = "."
+
+# Минимальная версия pytest
+minversion = "8.0"
+
+# Базовые флаги для запуска:
+# -v: подробный вывод
+# -ra: показать итоговый отчет по всем тестам, кроме прошедших (failed, skipped, etc.)
+# --strict-markers: запретить использование незарегистрированных маркеров
+addopts = "-v -ra --strict-markers"
+
+# Папки, в которых искать тесты
+testpaths = [
+    "tests",
+]
+
+# Штампы/паттерны для поиска файлов и функций
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*", "*Tests"]
+python_functions = ["test_*"]

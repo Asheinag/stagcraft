@@ -1,0 +1,461 @@
+:root {
+    --bg: #16181c;
+    --panel: #1e2128;
+    --panel-2: #262a33;
+    --line: #333844;
+    --text: #d8dce3;
+    --dim: #8b93a3;
+    --accent: #7aa2f7;
+    --warn: #e0af68;
+    --bad: #f7768e;
+    --ok: #9ece6a;
+    --sim: #bb9af7;
+    /* «есть похожий тег» — жёлтый уже занят редкими */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.5 "Inter", "Segoe UI", system-ui, sans-serif;
+    display: grid;
+    grid-template-columns: 190px 1fr 300px;
+    grid-template-rows: 100%;
+    overflow: hidden;
+}
+
+/* ---- левая колонка: список файлов ---- */
+#files {
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.thumb {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    margin-bottom: 3px;
+}
+
+.thumb:hover {
+    background: var(--panel-2);
+}
+
+.thumb.active {
+    background: var(--panel-2);
+    border-color: var(--accent);
+}
+
+.thumb.flag {
+    border-color: var(--warn);
+}
+
+.thumb img {
+    width: 42px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #000;
+    flex: none;
+}
+
+.thumb .meta {
+    min-width: 0;
+}
+
+.thumb .nm {
+    font: 12px/1.2 ui-monospace, monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.thumb .cnt {
+    font-size: 11px;
+    color: var(--dim);
+}
+
+.thumb .cnt.empty {
+    color: var(--bad);
+}
+
+.thumb .cnt .dup {
+    color: var(--bad);
+}
+
+.box {
+    accent-color: var(--accent);
+    width: 14px;
+    height: 14px;
+    flex: none;
+}
+
+/* ---- центр: картинка + текст ---- */
+#main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+#stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    background: #101215;
+}
+
+#stage img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+#editor {
+    border-top: 1px solid var(--line);
+    background: var(--panel);
+}
+
+#bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--dim);
+}
+
+#bar .nm {
+    color: var(--text);
+    font-family: ui-monospace, monospace;
+}
+
+#bar .spacer {
+    flex: 1;
+}
+
+#status {
+    color: var(--ok);
+    opacity: 0;
+    transition: opacity .2s;
+}
+
+#status.show {
+    opacity: 1;
+}
+
+textarea {
+    width: 100%;
+    height: 110px;
+    resize: vertical;
+    background: var(--panel-2);
+    color: var(--text);
+    border: none;
+    border-top: 1px solid var(--line);
+    padding: 10px 12px;
+    outline: none;
+    font: 13px/1.6 ui-monospace, "JetBrains Mono", monospace;
+}
+
+textarea:focus {
+    background: #2a2f3a;
+}
+
+#chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 8px 10px;
+    border-top: 1px solid var(--line);
+    min-height: 34px;
+}
+
+.chip {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    padding: 1px 9px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--dim);
+}
+
+.chip:hover {
+    border-color: var(--bad);
+    color: var(--bad);
+}
+
+.chip.rare {
+    border-color: var(--warn);
+    color: var(--warn);
+}
+
+.chip.sim {
+    border-color: var(--sim);
+    color: var(--sim);
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+}
+
+.chip.dup {
+    border-color: var(--bad);
+    color: var(--bad);
+    background: #3a2029;
+    font-weight: 600;
+}
+
+/* ---- правая колонка: теги ---- */
+#side {
+    background: var(--panel);
+    border-left: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.sec {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+}
+
+.sec h3 {
+    margin: 0 0 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--dim);
+    font-weight: 600;
+}
+
+input[type=text] {
+    width: 100%;
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 13px;
+    outline: none;
+    font-family: ui-monospace, monospace;
+}
+
+input[type=text]:focus {
+    border-color: var(--accent);
+}
+
+button {
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+button:disabled {
+    opacity: .4;
+    cursor: default;
+    border-color: var(--line);
+    color: var(--dim);
+}
+
+/* ---- автодополнение по тегам датасета ---- */
+.ac {
+    position: relative;
+}
+
+.ac-list {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 3px);
+    z-index: 30;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    max-height: 190px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 8px 20px #000a;
+}
+
+.ac-list.open {
+    display: block;
+}
+
+.ac-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 7px;
+    cursor: pointer;
+    font: 12px/1.5 ui-monospace, monospace;
+}
+
+.ac-item .n {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ac-item .c {
+    font-size: 11px;
+    color: var(--dim);
+}
+
+.ac-item:hover,
+.ac-item.cur {
+    background: var(--line);
+}
+
+.ac-item.cur .n {
+    color: var(--accent);
+}
+
+.note {
+    font-size: 11px;
+    color: var(--dim);
+    margin-top: 5px;
+    min-height: 15px;
+    line-height: 1.35;
+}
+
+.note.err {
+    color: var(--bad);
+}
+
+.note.done {
+    color: var(--ok);
+}
+
+.row {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.row>* {
+    flex: 1;
+}
+
+#taglist {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 8px;
+}
+
+.tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 6px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: 12px/1.4 ui-monospace, monospace;
+}
+
+.tag:hover {
+    background: var(--panel-2);
+}
+
+.tag.sel {
+    background: var(--panel-2);
+    color: var(--accent);
+}
+
+.tag .n {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tag .c {
+    font-size: 11px;
+    color: var(--dim);
+    background: #2c313c;
+    border-radius: 8px;
+    padding: 0 6px;
+}
+
+.tag.lonely .c {
+    background: #4a3a22;
+    color: var(--warn);
+}
+
+.tag.sim .n {
+    text-decoration: underline dotted var(--sim);
+    text-underline-offset: 2px;
+}
+
+.tag.on .n {
+    color: var(--ok);
+}
+
+.tag .add {
+    flex: none;
+    width: 16px;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 16px;
+    color: var(--dim);
+    opacity: 0;
+    transition: opacity .12s;
+}
+
+.tag:hover .add {
+    opacity: 1;
+}
+
+.tag .add:hover {
+    color: var(--ok);
+    background: #2c313c;
+}
+
+.tag.on .add {
+    opacity: .5;
+    color: var(--ok);
+    background: none;
+    cursor: default;
+}
+
+.hint {
+    font-size: 11px;
+    color: var(--dim);
+    padding: 6px 10px;
+}
+
+kbd {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0 4px;
+    font-size: 11px;
+    font-family: ui-monospace, monospace;
+}
