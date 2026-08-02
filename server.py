@@ -22,8 +22,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.dataset = dataset
         super().__init__(*args, **kw)
 
-    def log_message(self, format, *args):
-        pass
+    # def log_message(self, format, *args):
+    #     pass
 
     # -- утилиты ответа
     def _serve_static(self, rel: str):
@@ -63,14 +63,17 @@ class Handler(http.server.BaseHTTPRequestHandler):
             return
 
         if path.startswith("/static/"):
+            self.log_message("Static Loading: start load static")
             self._serve_static(path[len("/static/") :])
             return
 
         if path == "/api/state":
+            self.log_message("State Loading: start load state")
             self._json(self.dataset.build_state())
             return
 
         if path.startswith("/img/"):
+            self.log_message("Img Loading: start load img")
             name = urllib.parse.unquote(path[len("/img/") :])
             try:
                 p = self.dataset.safe_image(name)
@@ -82,6 +85,18 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self._send(200, data, ctype)
             return
 
+        if path == "/api/meta":
+            self.log_message("Meta Loading: start load meta")
+            params = urllib.parse.parse_qs(parsed.query)
+            name = params.get("name", [""])[0]
+            try:
+                image = self.dataset.safe_image(name)
+            except ValueError:
+                self._json({"error": "bad name"}, 400)
+                return
+            self._json(self.dataset.get_metadata(image))
+            return
+        
         self._send(404, b"not found", "text/plain")
 
     def do_POST(self):

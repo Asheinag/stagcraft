@@ -14,6 +14,59 @@ async function load() {
     renderFiles(); renderTags(); show(0);
 }
 
+// ---------------------------------------------------------------- metadata
+
+let metaOpen = false;
+let metaSeq = 0;                 // счётчик запросов, защита от гонки
+
+function currentName() {
+    const it = state.items[idx];
+    return it ? it.name : null;
+}
+
+async function loadMeta(name) {
+    const seq = ++metaSeq;
+    let d;
+    try {
+        const r = await fetch('/api/meta?name=' + encodeURIComponent(name));
+        if (!r.ok) throw new Error(r.status);
+        d = await r.json();
+    } catch {
+        d = null;
+    }
+    if (seq !== metaSeq) return;   // ушёл более свежий запрос — этот ответ протух
+    renderMeta(d);
+}
+
+function renderMeta(d) {
+    const body = $('meta-body');
+    body.textContent = '';
+    if (!d || !d.available) { body.textContent = 'метаданных нет'; return; }
+
+    d.prompts.forEach(p => {
+        body.appendChild(metaBlock('позитив', p.positive));
+        body.appendChild(metaBlock('негатив', p.negative));
+    });
+}
+
+function metaBlock(label, text) {
+    const wrap = document.createElement('div');
+    wrap.className = 'meta-block';
+    const h = document.createElement('div');
+    h.className = 'meta-label';
+    h.textContent = label;
+    const v = document.createElement('div');
+    v.className = 'meta-text';
+    v.textContent = text;
+    wrap.append(h, v);
+    return wrap;
+}
+
+$('metadata').addEventListener('toggle', () => {
+    metaOpen = $('metadata').open;
+    if (metaOpen) loadMeta(currentName());
+});
+
 // теги текущего кадра как есть, с дублями и в исходном порядке
 function curTags() {
     return $('cap').value.split(',').map(s => s.trim()).filter(Boolean);
@@ -110,6 +163,9 @@ function show(i) {
     $('cap').value = it.caption;
     $('curname').textContent = it.name;
     $('pos').textContent = `${idx + 1}/${state.items.length}`;
+    $('pos').textContent = `${idx + 1}/${state.items.length}`;
+    $('meta-body').textContent = '';              // гасим предыдущий кадр сразу
+    if (metaOpen) loadMeta(it.name);
     renderChips(); renderFiles(); renderTags();
     const act = document.querySelector('.thumb.active');
     if (act) act.scrollIntoView({ block: 'nearest' });

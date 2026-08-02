@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from utilities import similar_map, split_tags
+from utilities import similar_map, split_tags, extract_prompts, load_png_metadata
 
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".bmp"}
 
@@ -64,3 +64,13 @@ class Dataset:
 
     def get_tags(self, img: Path) -> list[str]:
         return split_tags(self.read_caption(img))
+
+    def get_metadata(self, img: Path) -> dict:
+        raw_metadata = load_png_metadata(str(img))
+        return {
+            "available": True,
+            "prompts": extract_prompts(raw_metadata),
+            "raw":  raw_metadata
+        }
+        
+        
